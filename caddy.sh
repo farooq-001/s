@@ -61,6 +61,20 @@ http://${ZTN_IP}:83 {
     output file /var/log/caddy/access-83.log
   }
 }
+
+### flink-prod-2 ###
+http://${ZTN_IP}:84 {
+  tls internal
+  reverse_proxy http://65.0.184.197:8081 {
+    header_up X-Real-IP {remote}
+    header_up X-Forwarded-For {remote}
+    header_up X-Forwarded-Proto {scheme}
+  }
+  log {
+    output file /var/log/caddy/access-84.log
+  }
+}
+
 EOF
 
 echo "Caddyfile updated successfully."
@@ -87,8 +101,11 @@ ZTN_CONFIG_FILE="/etc/ztn/config.yaml"
 
 # Append the required configuration to /etc/ztn/config.yaml
 echo -e "    - port: 81\n      proto: tcp\n      groups:\n        - ssh" | tee -a "$ZTN_CONFIG_FILE"
+
 echo -e "    - port: 82\n      proto: tcp\n      groups:\n        - ssh" | tee -a "$ZTN_CONFIG_FILE"
+
 echo -e "    - port: 83\n      proto: tcp\n      groups:\n        - ssh" | tee -a "$ZTN_CONFIG_FILE"
+
 echo -e "    - port: 84\n      proto: tcp\n      groups:\n        - ssh" | tee -a "$ZTN_CONFIG_FILE"
 
 # Restart firewalld to apply changes
