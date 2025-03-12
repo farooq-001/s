@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root. Please use sudo or log in as root." 
+   exit 1
+fi
+
 # Step 1: Set ZTN_IP in .bashrc from the ztn0 interface
 echo "ZTN_IP=$(ifconfig ztn0 | grep 'inet ' | awk '{print $2}')" >> ~/.bashrc  && source ~/.bashrc
 
